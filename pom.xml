@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven_3'
+        jdk 'JDK_17'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                bat 'mvn clean compile'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                bat 'mvn test'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                bat 'mvn package'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Build successful for branch: ${env.BRANCH_NAME}"
+        }
+        failure {
+            echo "Build failed for branch: ${env.BRANCH_NAME}"
+        }
+    }
+}
